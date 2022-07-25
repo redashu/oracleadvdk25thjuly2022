@@ -294,6 +294,22 @@ bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbi
 / # exit
 
 ```
+### more container 
+
+```
+ docker  stop  ashuc1
+ docker  start  ashuc1
+ [ashu@docker-host ~]$ docker  stop ashuc1
+ashuc1
+[ashu@docker-host ~]$ docker  rm  ashuc1
+ashuc1
+
+```
+
+### container life cycle
+
+<img src="clife.png">
+
 
 
 
