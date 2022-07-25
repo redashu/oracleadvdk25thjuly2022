@@ -1,1 +1,4 @@
-# oracleadvdk25thjuly2022
+# Training plan 
+
+<img src="plan.png">
+
