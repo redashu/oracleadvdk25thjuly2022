@@ -310,7 +310,39 @@ ashuc1
 
 <img src="clife.png">
 
+### solution of question 1 
 
+```
+[ashu@docker-host ~]$ docker run -d --name ashuc1  alpine  ping fb.com 
+6f318576f23a36fa7fa865eca0c93cfa2eb1ae407c1109a357fa25609fa9b945
+[ashu@docker-host ~]$ docker run -d --name ashuc2  alpine  ping fb.com 
+a9dd4c00c5f0f8b051789258fed3937524a564d67a3e4e33f71cbab4eaf924a8
+[ashu@docker-host ~]$ docker exec -it  ashuc1  sh 
+/ # pwd
+/
+/ # ls
+bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbin   srv    sys    tmp    usr    var
+/ # echo "hey i am alpine contaienr "  >helloc1.txt 
+/ # s
+sh: s: not found
+/ # ls
+bin          etc          home         media        opt          root         sbin         sys          usr
+dev          helloc1.txt  lib          mnt          proc         run          srv          tmp          var
+/ # pwd
+/
+/ # exit
+[ashu@docker-host ~]$ ls
+[ashu@docker-host ~]$ docker  cp   ashuc1:/helloc1.txt  . 
+[ashu@docker-host ~]$ ls
+helloc1.txt
+[ashu@docker-host ~]$ cat helloc1.txt 
+hey i am alpine contaienr 
+[ashu@docker-host ~]$ docker  cp  helloc1.txt   ashuc2:/
+[ashu@docker-host ~]$ docker  exec -it ashuc2 ls  / 
+bin          helloc1.txt  media        proc         sbin         tmp
+dev          home         mnt          root         srv          usr
+etc          lib          opt          run          sys          var
+```
 
 
 
