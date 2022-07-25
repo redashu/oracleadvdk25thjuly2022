@@ -479,3 +479,32 @@ Step 3/6 : RUN yum install python3 -y && mkdir  /mycode
 Oracle Linux 8 BaseOS Latest (
 ```
 
+### creating container 
+
+```
+[ashu@docker-host pythoncode]$ docker  run -d  -it  --name ashuc1  ashupython:v2  
+506be4629948cc015de4c2458b4b2d7b81488ccfc657824b65679a7b231362da
+[ashu@docker-host pythoncode]$ docker  ps
+CONTAINER ID        IMAGE               COMMAND               CREATED             STATUS              PORTS               NAMES
+506be4629948        ashupython:v2       "python3 oracle.py"   7 seconds ago       Up 6 seconds                            ashuc1
+```
+
+### checking resources consumption 
+
+```
+[ashu@docker-host pythoncode]$ docker  stats  
+
+CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS
+9b6daa5c807d        pallavic1           0.01%               3.418MiB / 15.35GiB   0.02%               866B / 0B           0B / 0B             1
+be5c748d8642        ayushc1             0.01%               3.422MiB / 15.35GiB   0.02%               936B / 0B           0B / 0B             1
+4f77f6c0a11f        omeshc1             0.00%               3.488MiB / 15.35GiB   0.02%               1.1kB / 0B          0B / 0B             1
+28bacb8bd869        varpy               0.01%               3.406MiB / 15.35GiB   0.02%               1.1kB / 0B          0B / 0B             1
+6afa68ce107e        chanpython          0.01%               3.418MiB / 15.35GiB   0.02%               1.17kB / 0B         0B / 0B             1
+89e85102111e        sahilc1phython      0.00%               3.422MiB / 15.35GiB   0.02%               1.17kB / 0B         0B / 0B             1
+506be4629948        ashuc1              0.01%               3.414MiB / 15.35GiB   0.02%               1.17kB / 0B         0B / 0B             1
+19b70bab48d0        apoorvpythonv2      0.00%               3.523MiB / 15.35GiB   0.02%               1.44kB / 0B         0B / 0B             1
+^C
+
+```
+
+
