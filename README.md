@@ -344,5 +344,29 @@ dev          home         mnt          root         srv          usr
 etc          lib          opt          run          sys          var
 ```
 
+### some more adv commands in docker cli 
+
+```
+  62  docker  stop  $(docker  ps  -q)
+   63  docker  ps
+   64  docker  start  $(docker  ps  -qa)
+   65  docker  ps
+   66  history 
+   67  docker  kill   $(docker  ps  -q)
+   68  docker  ps 
+   69  docker  ps -a
+   70  docker  ps -aq
+   71  docker rm $(docker  ps -aq)
+```
+
+
+### app to container journey 
+
+<img src="app2cont.png">
+
+### to write / change in sample apps and in Dockerfile we will be using vscode 
+
+[link_to_download](https://code.visualstudio.com/download)
+
 
 
