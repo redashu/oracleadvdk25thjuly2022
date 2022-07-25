@@ -576,5 +576,9 @@ v1: digest: sha256:9f53e753d4fee300b36a2d1a844ec9c90785fe56479d3b91a48eba7499733
 Removing login credentials for phx.ocir.io
 ```
 
+### introduction to docker compose 
+
+<img src="compose.png">
+
 
 
