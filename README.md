@@ -368,5 +368,114 @@ etc          lib          opt          run          sys          var
 
 [link_to_download](https://code.visualstudio.com/download)
 
+### Dockerfile demo with sample python Code 
 
+### python code 
+
+```
+import time
+while True:
+    print("Hello world this is my container ")
+    time.sleep(2)
+    print("PYthon sample code by ashutoshh ")
+```
+
+### Dockerfile 
+
+```
+FROM python 
+# we are calling python image from docker hub 
+LABEL name=ashutoshh
+LABEL email=ashutoshh@linux.com
+# optional field but you can share image creator info 
+RUN mkdir /mycode 
+# it to get shell inside container during image build time 
+COPY oracle.py /mycode/
+# copy code from Dockerfile location to image which is going to build 
+WORKDIR /mycode
+# changing directory during image build time 
+CMD ["python","oracle.py"]
+# use of CMd is to set default process 
+# note: we can't have more than one CMD because it container can have only one process 
+```
+
+
+### running dockerfile 
+
+```
+[ashu@docker-host myimages]$ pwd
+/home/ashu/myimages
+[ashu@docker-host myimages]$ ls
+[ashu@docker-host myimages]$ mkdir  javacode  pythoncode golang  webapps 
+[ashu@docker-host myimages]$ ls
+golang  javacode  pythoncode  webapps
+[ashu@docker-host myimages]$ cd pythoncode/
+[ashu@docker-host pythoncode]$ ls
+Dockerfile  oracle.py
+[ashu@docker-host pythoncode]$ ls
+Dockerfile  oracle.py
+[ashu@docker-host pythoncode]$ docker  build  -t  ashupython:v1  . 
+Sending build context to Docker daemon  3.584kB
+Step 1/7 : FROM python
+Trying to pull repository docker.io/library/python ... 
+latest: Pulling from docker.io/library/python
+d836772a1c1f: Already exists 
+66a9e63c657a: Already exists 
+d1989b6e74cf: Already exists 
+c28818711e1e: Pull complete 
+5084fa7ebd74: Extracting [======================================>            ]  152.6MB/196.8MB
+7f162c881e4f: Download complete 
+e3f48ccb2876: Download complete 
+```
+
+### checking images 
+
+```
+[ashu@docker-host pythoncode]$ docker  images
+REPOSITORY                   TAG                 IMAGE ID            CREATED                  SIZE
+tapupython                   v1                  65ea4743cc77        Less than a second ago   920MB
+palpython                    v1                  32ca8447c46f        6 seconds ago            920MB
+apoorvpython                 v1                  df77c73105d6        22 seconds ago           920MB
+omeshs                       v1                  e91298f7b7ce        23 seconds ago           920MB
+somefile                     v1                  761fcf50d7a9        32 seconds ago           920MB
+ayushpython                  v1                  fa387c482feb        52 seconds ago           920MB
+sahilphython                 v1                  e71d84ad1d31        59 seconds ago           920MB
+chanpython                   v1                  7a24793f19ff        About a minute ago       920MB
+gauravpython                 v1                  c60b3a2834f8        About a minute ago       920MB
+ashupython                   v1                  38515e8260e1        About a minute ago       920MB
+```
+
+### remove image if you want to 
+
+```
+ docker rmi  ashupython:v1 
+```
+
+### an alternativ Dockerfile 
+
+```
+FROM oraclelinux:8.4
+LABEL email=ashutoshh@linux.com 
+RUN yum install python3 -y && mkdir  /mycode 
+COPY oracle.py  /mycode/
+WORKDIR /mycode
+CMD ["python3","oracle.py"]
+
+```
+
+### using this docker
+
+```
+[ashu@docker-host pythoncode]$ docker build -t  ashupython:v2 -f  oracle.dockerfile . 
+Sending build context to Docker daemon  4.608kB
+Step 1/6 : FROM oraclelinux:8.4
+ ---> 97e22ab49eea
+Step 2/6 : LABEL email=ashutoshh@linux.com
+ ---> Running in ad0a51e2566e
+Removing intermediate container ad0a51e2566e
+ ---> ada32b2e4266
+Step 3/6 : RUN yum install python3 -y && mkdir  /mycode
+ ---> Running in f72de32850d6
+Oracle Linux 8 BaseOS Latest (
+```
 
