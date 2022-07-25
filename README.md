@@ -507,4 +507,50 @@ be5c748d8642        ayushc1             0.01%               3.422MiB / 15.35GiB 
 
 ```
 
+### docker images sharing 
+
+<img src="reg.png">
+
+## steps to push images to docker hub 
+
+### tagging 
+
+```
+docker  tag  ashualp:pycodev1   docker.io/dockerashu/ashualp:1.0
+
+```
+
+### login 
+```
+[ashu@docker-host ~]$ docker  login  
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: dockerashu
+Password: 
+WARNING! Your password will be stored unencrypted in /home/ashu/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
+```
+
+### pushing 
+
+```
+[ashu@docker-host ~]$ docker  push  docker.io/dockerashu/ashualp:1.0
+The push refers to repository [docker.io/dockerashu/ashualp]
+ba976c86024d: Pushed 
+8c97e55265e5: Pushed 
+ec34fcc1d526: Mounted from library/alpine 
+1.0: digest: sha256:9f53e753d4fee300b36a2d1a844ec9c90785fe56479d3b91a48eba7499733e46 size: 947
+```
+
+### optiona step --logout 
+
+```
+[ashu@docker-host ~]$ docker  logout 
+Removing login credentials for https://index.docker.io/v1/
+```
+
+
 
