@@ -128,6 +128,58 @@ ashudbclient        "entrypoint.sh docke…"   dbclient            running      
 
 ```
 
+### Demo 3 
+
+### webapp and web servers
+
+<img src="webs.png">
+
+```
+[ashu@docker-host ashu-compose]$ mkdir  ashufrontend
+[ashu@docker-host ashu-compose]$ ls
+ashufrontend  docker-compose.yaml  khus.yaml  mysqldb.yaml
+[ashu@docker-host ashu-compose]$ cd  ashufrontend/
+[ashu@docker-host ashufrontend]$ git clone https://github.com/schoolofdevops/html-sample-app.git
+bash: git: command not found
+[ashu@docker-host ashufrontend]$ git clone https://github.com/schoolofdevops/html-sample-app.git
+Cloning into 'html-sample-app'...
+remote: Enumerating objects: 74, done.
+remote: Total 74 (delta 0), reused 0 (delta 0), pack-reused 74
+Unpacking objects: 100% (74/74), done.
+
+====
+
+[ashu@docker-host ashufrontend]$ ls  -a
+.  ..  Dockerfile  .dockerignore  html-sample-app
+
+===Dockerfile 
+
+FROM nginx
+LABEL name=ashutoshh
+COPY html-sample-app  /usr/share/nginx/html/
+
+=====>.dockerignore
+
+html-sample-app/.git
+html-sample-app/*.txt
+
+
+====>docker-compose file 
+
+version: '3.8'
+services:
+  ashufrontapp:
+    image: ashuapp:frontv1 
+    build:   # to call dockerfile 
+      context: . # location of dockerfile 
+      dockerfile: Dockerfile # name of dockerfile 
+    container_name: ashuwb1
+    ports:
+      - "1234:80"
+```
+
+
+
 
 
 
