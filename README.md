@@ -341,6 +341,122 @@ workernode2     Ready    <none>          19m   v1.24.3
   323  docker push phx.ocir.io/axmbtg8judkl/ashuwebapp:frontendv1
 ```
 
+### Deploy app in k8s using pod concept 
+
+<img src="pod.png">
+
+### Pod Definition 
+
+```
+apiVersion: v1 
+kind: Pod # resource under api v1 
+metadata: # info about resource 
+  name: ashupod-123 
+spec: # info about your application 
+  containers:
+  - name: ashuc1
+    image: docker.io/dockerashu/ashuwebapp:frontendv1 
+    ports:
+    - containerPort: 80 
+```
+
+### deploy pod yaml 
+
+```
+[ashu@docker-host ashu-k8sapps]$ ls
+ashupod1.yaml
+[ashu@docker-host ashu-k8sapps]$ kubectl apply -f ashupod1.yaml 
+pod/ashupod-123 created
+[ashu@docker-host ashu-k8sapps]$ kubectl   get  pods 
+NAME           READY   STATUS              RESTARTS   AGE
+ashupod-123    1/1     Running             0          9s
+sahilpod-123   0/1     ContainerCreating   0          0s
+varunpod       1/1     Running             0          2m30s
+[ashu@docker-host ashu-k8sapps]$ 
+```
+
+### importance of kube-schedular to plan your pod 
+
+```
+[ashu@docker-host ~]$ kubectl  get po -o wide
+NAME               READY   STATUS             RESTARTS        AGE     IP               NODE          NOMINATED NODE   READINESS GATES
+abhipod-112        0/1     CrashLoopBackOff   6 (3m35s ago)   9m19s   192.168.216.70   workernode2   <none>           <none>
+ashupod-123        1/1     Running            0               10m     192.168.216.66   workernode2   <none>           <none>
+ayushpod-123       1/1     Running            0               9m21s   192.168.216.69   workernode2   <none>           <none>
+chanpod-123        1/1     Running            0               9m42s   192.168.216.68   workernode2   <none>           <none>
+eashupod-143       1/1     Running            0               2m34s   192.168.212.7    workernode1   <none>           <none>
+gauravpod-111      1/1     Running            0               7m51s   192.168.212.6    workernode1   <none>           <none>
+kushpod-123        1/1     Running            0               9m20s   192.168.212.5    workernode1   <none>           <none>
+omesh-pod-type-1   1/1     Running            0               4m12s   192.168.216.71   workernode2   <none>           <none>
+
+```
+
+### describe pod 
+
+```
+[ashu@docker-host ~]$ kubectl  describe   pod  ashupod-123 
+Name:         ashupod-123
+Namespace:    default
+Priority:     0
+Node:         workernode2/172.31.86.228
+Start Time:   Tue, 26 Jul 2022 11:10:10 +0000
+Labels:       <none>
+Annotations:  cni.projectcalico.org/containerID: f2e6765c23dcee0154a3a02c886cfc699548b84260571edc1b210cfcec8f6dab
+              cni.projectcalico.org/podIP: 192.168.216.66/32
+              cni.projectcalico.org/podIPs: 192.168.216.66/32
+Status:       Running
+IP:           192.168.216.66
+IPs:
+  IP:  192.168.216.66
+Containers:
+  ashuc1:
+    Container ID:   containerd://e8511f8e30e6b1b13bd4834f88e4778b3170d234faba06bbdb9b9ee4af1f8baa
+    Image:          docker.io/dockerashu/ashuwebapp:frontendv1
+    Image ID:       docker.io/dockerashu/ashuwebapp@sha256:ad5286cdd7e50161d13ddb1bff44e12fa667ca25860799387d0b963a674cf90a
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Tue, 26 Jul 2022 11:10:10 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-86676 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+
+```
+
+### logs 
+
+```
+[ashu@docker-host ~]$ kubectl logs  ashupod-123
+/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.sh:
+```
+
+### accessing container inside pod 
+
+```
+[ashu@docker-host ~]$ kubectl  exec -it ashupod-123  -- bash 
+root@ashupod-123:/# 
+root@ashupod-123:/# 
+root@ashupod-123:/# ls
+bin   dev		   docker-entrypoint.sh  home  lib64  mnt  proc  run   srv  tmp  var
+boot  docker-entrypoint.d  etc			 lib   media  opt  root  sbin  sys  usr
+root@ashupod-123:/# 
+root@ashupod-123:/# exit
+exit
+
+```
 
 
 
