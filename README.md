@@ -178,6 +178,35 @@ services:
       - "1234:80"
 ```
 
+### running compose 
+
+```
+[ashu@docker-host ashu-compose]$ mkdir  ashufrontend
+[ashu@docker-host ashufrontend]$ ls
+docker-compose.yaml  Dockerfile  html-sample-app
+[ashu@docker-host ashufrontend]$ docker-compose up --build -d 
+[+] Building 6.5s (7/7) FINISHED                                                                  
+ => [internal] load build definition from Dockerfile                                         0.0s
+ => => transferring dockerfile: 172B                                                         0.0s
+ => [internal] load .dockerignore                                                            0.0s
+ => => transferring context: 141B                                                            0.0s
+ => [internal] load metadata for docker.io/library/nginx:latest                              1.0s
+ => [internal] load build context                                                            0.0s
+ => => transferring context: 2.05MB        
+```
+
+### lets test and clean up 
+
+```
+[ashu@docker-host ashufrontend]$ docker-compose  ps
+NAME                COMMAND                  SERVICE             STATUS              PORTS
+ashuwb1             "/docker-entrypoint.…"   ashufrontapp        running             0.0.0.0:1234->80/tcp
+[ashu@docker-host ashufrontend]$ docker-compose down 
+[+] Running 2/2
+ ⠿ Container ashuwb1             Removed                                                     0.5s
+ ⠿ Network ashufrontend_default  Removed         
+```
+
 
 
 
