@@ -319,6 +319,27 @@ workernode2     Ready    <none>          19m   v1.24.3
 [ashu@docker-host myimages]$ 
 ```
 
+### etcd the brain of control plan 
+
+<img src="etcd.png">
+
+### lets deploy apps in k8s -- 
+
+### step 1 push docker images to any Registry 
+
+```
+313  docker-compose up --build -d 
+  314  docker-compose images
+  315  docker-compose ps
+  316  docker  tag ashuapp:frontv1  docker.io/dockerashu/ashuwebapp:frontendv1  
+  317  docker login -u dockerashu
+  318  docker push  docker.io/dockerashu/ashuwebapp:frontendv1 
+  319  history 
+  320  docker  tag  ashuapp:frontv1 phx.ocir.io/axmbtg8judkl/ashuwebapp:frontendv1
+  321  history 
+  322  docker  login   phx.ocir.io -u axmbtg8judkl/learntechbyme@gmail.com
+  323  docker push phx.ocir.io/axmbtg8judkl/ashuwebapp:frontendv1
+```
 
 
 
