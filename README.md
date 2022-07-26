@@ -260,6 +260,68 @@ kustomizeVersion: v4.5.4
 
 <img src="infra.png">
 
+## k8s control plane components 
+
+### apiserver 
+
+<img src="api.png">
+
+### downlaod kube-apiserver -- auth token to connect from k8s client machine 
+
+```
+[root@control-plane ~]# cd  /etc/kubernetes/
+[root@control-plane kubernetes]# ls
+admin.conf
+```
+
+### sending first request to control plane -- APiserver 
+
+```
+[ashu@docker-host myimages]$ kubectl   cluster-info  
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+[ashu@docker-host myimages]$ ls
+admin.conf  ashu-compose  golang  javacode  pythoncode  webapps
+[ashu@docker-host myimages]$ kubectl   cluster-info   --kubeconfig admin.conf 
+Kubernetes control plane is running at https://44.207.217.46:6443
+CoreDNS is running at https://44.207.217.46:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+[ashu@docker-host myimages]$ 
+
+```
+
+### --
+
+```
+[ashu@docker-host myimages]$ kubectl  get  nodes    --kubeconfig admin.conf 
+NAME            STATUS   ROLES           AGE   VERSION
+control-plane   Ready    control-plane   15m   v1.24.3
+workernode1     Ready    <none>          14m   v1.24.3
+workernode2     Ready    <none>          14m   v1.24.3
+```
+
+### copy admin.conf in default location from where kubectl can read 
+
+```
+[ashu@docker-host myimages]$ mkdir  ~/.kube 
+mkdir: cannot create directory ‘/home/ashu/.kube’: File exists
+[ashu@docker-host myimages]$ 
+[ashu@docker-host myimages]$ cp -v  admin.conf   ~/.kube/config 
+‘admin.conf’ -> ‘/home/ashu/.kube/config’
+[ashu@docker-host myimages]$ 
+[ashu@docker-host myimages]$ kubectl  get  nodes
+NAME            STATUS   ROLES           AGE   VERSION
+control-plane   Ready    control-plane   21m   v1.24.3
+workernode1     Ready    <none>          19m   v1.24.3
+workernode2     Ready    <none>          19m   v1.24.3
+[ashu@docker-host myimages]$ 
+```
+
+
+
+
 
 
 
