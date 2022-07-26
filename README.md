@@ -207,6 +207,59 @@ ashuwb1             "/docker-entrypoint.…"   ashufrontapp        running      
  ⠿ Network ashufrontend_default  Removed         
 ```
 
+## Problems with Container in real world 
+
+<img src="probc.png">
+
+### Introduction to container orchestration 
+
+<img src="carch.png">
+
+### k8s a production by Google -- K8s architecture 
+
+<img src="k8sarch.png">
+
+### preparing k8s client machine by installing kubectl 
+
+```
+[root@docker-host ~]# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   154  100   154    0     0    869      0 --:--:-- --:--:-- --:--:--   875
+100 43.5M  100 43.5M    0     0  80.4M      0 --:--:-- --:--:-- --:--:--  417M
+[root@docker-host ~]# 
+[root@docker-host ~]# 
+[root@docker-host ~]# ls
+Dockerfile  Nodejs  kubectl  project-html-website
+[root@docker-host ~]# mv kubectl /usr/bin/
+[root@docker-host ~]# chmod +x /usr/bin/kubectl 
+[root@docker-host ~]# 
+[root@docker-host ~]# kubectl  version  --client 
+WARNING: This version information is deprecated and will be replaced with the output from kubectl version --short.  Use --output=yaml|json to get the full version.
+Client Version: version.Info{Major:"1", Minor:"24", GitVersion:"v1.24.3", GitCommit:"aef86a93758dc3cb2c658dd9657ab4ad4afc21cb", GitTreeState:"clean", BuildDate:"2022-07-13T14:30:46Z", GoVersion:"go1.18.3", Compiler:"gc", Platform:"linux/amd64"}
+Kustomize Version: v4.5.4
+[root@docker-host ~]# 
+[root@docker-host ~]# 
+[root@docker-host ~]# kubectl  version  --client  -o yaml 
+clientVersion:
+  buildDate: "2022-07-13T14:30:46Z"
+  compiler: gc
+  gitCommit: aef86a93758dc3cb2c658dd9657ab4ad4afc21cb
+  gitTreeState: clean
+  gitVersion: v1.24.3
+  goVersion: go1.18.3
+  major: "1"
+  minor: "24"
+  platform: linux/amd64
+kustomizeVersion: v4.5.4
+
+
+```
+
+### k8s Infra setup understanding 
+
+<img src="infra.png">
+
 
 
 
