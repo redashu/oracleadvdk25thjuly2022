@@ -299,6 +299,54 @@ ashupod3   1/1     Running   0          6s
 [ashu@docker-host ashu-k8sapps]$ 
 ```
 
+##  K8s networking 
+
+### Understanding pod networking using {Container network internface [CNI]} model 
+
+<img src="cni.png">
+
+### list of CNI 
+
+[list_of_cni](https://github.com/containernetworking/cni)
+
+### pods can communicate to each other by Default 
+
+```
+[ashu@docker-host ~]$ kubectl  run  testpod --image=alpine  --command  sleep 100 
+pod/testpod created
+[ashu@docker-host ~]$ kubectl  get  po -o wide
+NAME       READY   STATUS    RESTARTS   AGE   IP               NODE          NOMINATED NODE   READINESS GATES
+ashupod3   1/1     Running   0          44m   192.168.212.45   workernode1   <none>           <none>
+testpod    1/1     Running   0          4s    192.168.212.59   workernode1   <none>           <none>
+[ashu@docker-host ~]$ kubectl  exec -it  testpod -- sh 
+/ # ping 192.168.212.45
+PING 192.168.212.45 (192.168.212.45): 56 data bytes
+64 bytes from 192.168.212.45: seq=0 ttl=63 time=0.146 ms
+64 bytes from 192.168.212.45: seq=1 ttl=63 time=0.084 ms
+^C
+--- 192.168.212.45 ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.084/0.115/0.146 ms
+/ # ping 192.168.216.75
+PING 192.168.216.75 (192.168.216.75): 56 data bytes
+64 bytes from 192.168.216.75: seq=0 ttl=62 time=0.595 ms
+64 bytes from 192.168.216.75: seq=1 ttl=62 time=0.551 ms
+^C
+--- 192.168.216.75 ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.551/0.573/0.595 ms
+/ # ping 192.168.216.73
+PING 192.168.216.73 (192.168.216.73): 56 data bytes
+64 bytes from 192.168.216.73: seq=0 ttl=62 time=0.535 ms
+64 bytes from 192.168.216.73: seq=1 ttl=62 time=0.561 ms
+^C
+--- 192.168.216.73 ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.535/0.548/0.561 ms
+/ # exit
+
+```
+
 
 
 
