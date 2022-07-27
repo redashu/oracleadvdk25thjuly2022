@@ -399,6 +399,49 @@ ashudep1-78fc8f55fb-r6nmz   1/1     Running   0          65s   192.168.216.88   
 [ashu@docker-host ashu-k8sapps]$ 
 ```
 
+### its time to create Internal Load Balancer 
+
+<img src="stype.png">
+
+### Note: to Expose apps outside k8s cluster only two types of services are responsible -- NodePort  & LoadBalancer 
+
+### NodePort service in k8s 
+
+<img src="np.png">
+
+
+### creating Nodeport service 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl  create   service 
+Create a service using a specified subcommand.
+
+Aliases:
+service, svc
+
+Available Commands:
+  clusterip      Create a ClusterIP service
+  externalname   Create an ExternalName service
+  loadbalancer   Create a LoadBalancer service
+  nodeport       Create a NodePort service
+
+Usage:
+  kubectl create service [flags] [options]
+
+Use "kubectl <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+[ashu@docker-host ashu-k8sapps]$ kubectl  create   service nodeport  ashulb1  --tcp  1234:80  --dry-run=client -o yaml >nodeport.yaml 
+```
+
+### 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl  get svc
+NAME      TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+ashulb1   NodePort   10.109.154.199   <none>        1234:31983/TCP   15m
+```
+
+
 
 
 
