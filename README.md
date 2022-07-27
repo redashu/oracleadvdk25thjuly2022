@@ -348,6 +348,57 @@ round-trip min/avg/max = 0.535/0.548/0.561 ms
 ```
 
 
+### pod networking and internal Loadbalancers
+
+<img src="pod1.png">
+
+### controller and service understanding 
+
+<img src="contsvc.png">
+
+### creating deployment 
+
+```
+ kubectl  create  deployment  ashudep1  --image=docker.io/dockerashu/ashuwebapp:frontendv1  --port 80  --dry-run=client  -o yaml >ashuapp_deploy.yaml
+```
+
+### lets deploy it 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl  apply -f  ashuapp_deploy.yaml 
+deployment.apps/ashudep1 created
+[ashu@docker-host ashu-k8sapps]$ kubectl  get  deployments
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   1/1     1            1           9s
+[ashu@docker-host ashu-k8sapps]$ kubectl  get  po
+NAME                        READY   STATUS    RESTARTS   AGE
+ashudep1-78fc8f55fb-7c5r5   1/1     Running   0          23s
+[ashu@docker-host ashu-k8sapps]$ kubectl  get  rs
+NAME                  DESIRED   CURRENT   READY   AGE
+ashudep1-78fc8f55fb   1         1         1       55s
+[ashu@docker-host ashu-k8sapps]$ 
+```
+
+### scaling pod using deployment controller -- manually 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl get deploy 
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   1/1     1            1           3m39s
+[ashu@docker-host ashu-k8sapps]$ kubectl  scale deployment  ashudep1 --replicas=3
+deployment.apps/ashudep1 scaled
+[ashu@docker-host ashu-k8sapps]$ 
+[ashu@docker-host ashu-k8sapps]$ kubectl get deploy 
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   3/3     3            3           4m3s
+[ashu@docker-host ashu-k8sapps]$ kubectl  get po -o wide 
+NAME                        READY   STATUS    RESTARTS   AGE   IP               NODE          NOMINATED NODE   READINESS GATES
+ashudep1-78fc8f55fb-9wgbx   1/1     Running   0          9s    192.168.212.3    workernode1   <none>           <none>
+ashudep1-78fc8f55fb-bvmns   1/1     Running   0          9s    192.168.212.2    workernode1   <none>           <none>
+ashudep1-78fc8f55fb-r6nmz   1/1     Running   0          65s   192.168.216.88   workernode2   <none>           <none>
+[ashu@docker-host ashu-k8sapps]$ 
+```
+
 
 
 
