@@ -93,5 +93,26 @@ ashupod2     1/1     Running   0          9s      192.168.216.84   workernode2  
 gauravpod2   1/1     R
 ```
 
+### capturing events in k8s for troubleshooting purpose 
+
+```
+  399  kubectl  get  events
+  400  kubectl  get  events --field-selector  type!=Normal
+```
+
+### json format for POD instruction 
+
+```
+  404  kubectl  run  ashupod3 --image=docker.io/dockerashu/ashuwebapp:frontendv1  --port 80  --dry-run=client  -o json  
+  405  kubectl  run  ashupod3 --image=docker.io/dockerashu/ashuwebapp:frontendv1  --port 80  --dry-run=client  -o json       >test.json 
+  406  history 
+[ashu@docker-host ~]$ kubectl  apply -f test.json 
+pod/ashupod3 created
+[ashu@docker-host ~]$ kubectl  get po 
+NAME          READY   STATUS    RESTARTS   AGE
+ashupod2      1/1     Running   0          10m
+ashupod3      1/1     Running   0          4s
+```
+
 
 
