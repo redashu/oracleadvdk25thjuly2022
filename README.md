@@ -613,6 +613,34 @@ docker build -t  phx.ocir.io/axmbtg8judkl/javawebapp:v1 .
 ### deployment YAML 
 
 ```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashujavaapp
+  name: ashujavaapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashujavaapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashujavaapp
+    spec:
+      imagePullSecrets:
+      - name: ashuimg-sec 
+      containers:
+      - image: phx.ocir.io/axmbtg8judkl/javawebapp:v1
+        name: javawebapp
+        ports:
+        - containerPort: 8080
+        resources: {}
+status: {}
 
 ```
 
