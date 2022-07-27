@@ -583,6 +583,63 @@ status:
   578  kubectl  cp a.txt   ashupodx:/tmp/  -n ashuk8s1 
 ```
 
+### multi Stage dockerfile 
+
+<img src="mul.png">
+
+```
+FROM oraclelinux:8.4  as Stage1 
+LABEL name=ashutoshh
+RUN yum install maven java-1.8.0-openjdk.x86_64 java-1.8.0-openjdk-devel.x86_64 -y && mkdir /javaweb
+COPY java-springboot /javaweb/
+WORKDIR /javaweb
+RUN mvn clean package
+# it will create folder --target and put war file overthere 
+
+FROM tomcat 
+LABEL name=ashutoshh
+LABEL email=ashutoshh@linux.com
+COPY --from=Stage1 /javaweb/target/WebApp.war /usr/local/tomcat/webapps/
+# above location is the default tomcat location 
+
+```
+
+### building it
+
+```
+docker build -t  phx.ocir.io/axmbtg8judkl/javawebapp:v1 .
+```
+
+### deployment YAML 
+
+```
+
+```
+
+### deploy it 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl apply -f spring.yaml 
+deployment.apps/ashujavaapp created
+[ashu@docker-host ashu-k8sapps]$ kubectl get deploy
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+ashujavaapp   0/1     1            0           8s
+[ashu@docker-host ashu-k8sapps]$ kubectl get po
+NAME                           READY   STATUS              RESTARTS   AGE
+ashujavaapp-85c7dcf85b-rpffx   0/1     ContainerCreating   0          14s
+```
+
+### creating service 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl  expose deployment  ashujavaapp --type NodePort --port  8080  --name  ashulb2 
+service/ashulb2 exposed
+[ashu@docker-host ashu-k8sapps]$ kubectl get svc
+NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+ashulb2   NodePort   10.100.179.35   <none>        8080:30061/TCP   35s
+[ashu@docker-host ashu-k8sapps]$ 
+```
+
 
 
 
