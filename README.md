@@ -441,6 +441,59 @@ NAME      TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
 ashulb1   NodePort   10.109.154.199   <none>        1234:31983/TCP   15m
 ```
 
+### service -- EP -- scaling of pods 
+
+```
+[ashu@docker-host ~]$ kubectl get deployments.apps 
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   1/1     1            1           105m
+[ashu@docker-host ~]$ kubectl get po 
+NAME                        READY   STATUS    RESTARTS   AGE
+ashudep1-78fc8f55fb-r6nmz   1/1     Running   0          102m
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl get po --show-labels 
+NAME                        READY   STATUS    RESTARTS   AGE    LABELS
+ashudep1-78fc8f55fb-r6nmz   1/1     Running   0          102m   app=ashudep1,pod-template-hash=78fc8f55fb
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  svc
+NAME      TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+ashulb1   NodePort   10.109.154.199   <none>        1234:31983/TCP   20m
+[ashu@docker-host ~]$ kubectl  get  svc -o wide
+NAME      TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+ashulb1   NodePort   10.109.154.199   <none>        1234:31983/TCP   20m   app=ashudep1
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl get po -o wide
+NAME                        READY   STATUS    RESTARTS   AGE    IP               NODE          NOMINATED NODE   READINESS GATES
+ashudep1-78fc8f55fb-r6nmz   1/1     Running   0          103m   192.168.216.88   workernode2   <none>           <none>
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  ep
+NAME      ENDPOINTS           AGE
+ashulb1   192.168.216.88:80   21m
+[ashu@docker-host ~]$ kubectl scale deployment ashudep1 --replicas 3
+deployment.apps/ashudep1 scaled
+[ashu@docker-host ~]$ kubectl get po -o wide
+NAME                        READY   STATUS    RESTARTS   AGE    IP               NODE          NOMINATED NODE   READINESS GATES
+ashudep1-78fc8f55fb-c6wpb   1/1     Running   0          4s     192.168.212.22   workernode1   <none>           <none>
+ashudep1-78fc8f55fb-p2rdr   1/1     Running   0          4s     192.168.216.93   workernode2   <none>           <none>
+ashudep1-78fc8f55fb-r6nmz   1/1     Running   0          104m   192.168.216.88   workernode2   <none>           <none>
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  ep
+NAME      ENDPOINTS                                               AGE
+ashulb1   192.168.212.22:80,192.168.216.88:80,192.168.216.93:80   22m
+[ashu@docker-host ~]$ kubectl scale deployment ashudep1 --replicas 1
+deployment.apps/ashudep1 scaled
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl get po -o wide
+NAME                        READY   STATUS    RESTARTS   AGE   IP               NODE          NOMINATED NODE   READINESS GATES
+ashudep1-78fc8f55fb-c6wpb   1/1     Running   0          22s   192.168.212.22   workernode1   <none>           <none>
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  ep
+NAME      ENDPOINTS           AGE
+ashulb1   192.168.212.22:80   22m
+
+```
+
 
 
 
