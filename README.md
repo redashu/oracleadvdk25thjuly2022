@@ -494,6 +494,30 @@ ashulb1   192.168.212.22:80   22m
 
 ```
 
+### serivce nodeport YAML 
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashulb1
+  name: ashulb1 # name of service 
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234 # loadbalancer internal port 
+    protocol: TCP
+    targetPort: 80 # target app port which is running in the POD 
+  selector: # uses label of Pod to find 
+    app: ashudep1 # exact label of POd 
+  type: NodePort
+status:
+  loadBalancer: {}
+
+```
+
 
 
 
