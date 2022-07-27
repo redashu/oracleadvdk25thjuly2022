@@ -188,6 +188,35 @@ CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPAC
 
 ```
 
+### deploy pods 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl apply -f  ashupod1.yaml  -f ashupod2.yaml 
+pod/ashupod-123 created
+pod/ashupod2 created
+[ashu@docker-host ashu-k8sapps]$ kubectl  get pod
+NAME          READY   STATUS    RESTARTS   AGE
+ashupod-123   1/1     Running   0          7s
+ashupod2      1/1     Running   0          6s
+```
+
+### deploy pods in different namespace 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl apply -f  ashupod1.yaml  -f ashupod2.yaml -n default 
+pod/ashupod-123 created
+pod/ashupod2 created
+[ashu@docker-host ashu-k8sapps]$ 
+[ashu@docker-host ashu-k8sapps]$ 
+[ashu@docker-host ashu-k8sapps]$ kubectl  get pod -n default 
+NAME          READY   STATUS    RESTARTS   AGE
+ashupod-123   1/1     Running   0          7s
+ashupod2      1/1     Running   0          7s
+[ashu@docker-host ashu-k8sapps]$ 
+```
+
+
+
 
 
 
