@@ -114,5 +114,80 @@ ashupod2      1/1     Running   0          10m
 ashupod3      1/1     Running   0          4s
 ```
 
+###  Creating a private space for individuals using Namespace 
+
+<img src="ns.png">
+
+### checking default namespaces in k8s 
+
+```
+[ashu@docker-host ~]$ kubectl  get  namespaces 
+NAME              STATUS   AGE
+default           Active   19h
+kube-node-lease   Active   19h
+kube-public       Active   19h
+kube-system       Active   19h
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  pods
+No resources found in default namespace.
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  pods  -n kube-system 
+NAME                                       READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-555bc4b957-59tts   1/1     Running   1 (69m ago)   19h
+calico-node-gjj79                          1/1     Running   1 (69m ago)   19h
+calico-node-h2dsj                          1/1     Running   1 (69m ago)   19h
+calico-node-kfhzg                          1/1     Running   1 (69m ago)   19h
+coredns-6d4b75cb6d-8r6tz                   1/1     Running   1 (69m ago)   19h
+coredns-6d4b75cb6d-bqctw                   1/1     Running   1 (69m ago)   19h
+
+
+```
+
+### creating custom namespaces
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl  create  namespace  ashu-apps --dry-run=client -o yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: ashu-apps
+spec: {}
+status: {}
+[ashu@docker-host ashu-k8sapps]$ kubectl  create  namespace  ashu-apps --dry-run=client -o yaml >ns.yaml 
+[ashu@docker-host ashu-k8sapps]$ ls
+ashupod1.yaml  ashupod2.yaml  ns.yaml
+[ashu@docker-host ashu-k8sapps]$ kubectl apply -f  ns.yaml 
+namespace/ashu-apps created
+[ashu@docker-host ashu-k8sapps]$ kubectl  get  namespaces 
+NAME              STATUS   AGE
+ashu-apps         Active   6s
+default           Active   19h
+kube-node-lease   Active   19h
+kube-public       Active   19h
+kube-system       Active   19h
+```
+
+### configure default namespace for user 
+
+```
+[ashu@docker-host ~]$ kubectl  get  pods
+No resources found in default namespace.
+[ashu@docker-host ~]$ kubectl  config set-context  --current --namespace ashu-apps  
+Context "kubernetes-admin@kubernetes" modified.
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  pods
+No resources found in ashu-apps namespace.
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl config  get-contexts 
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   ashu-apps
+[ashu@docker-host ~]$ 
+
+
+```
+
+
 
 
