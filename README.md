@@ -668,6 +668,47 @@ ashulb2   NodePort   10.100.179.35   <none>        8080:30061/TCP   35s
 [ashu@docker-host ashu-k8sapps]$ 
 ```
 
+### webUI deployment for k8s 
+
+```
+[ashu@docker-host ~]$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
+namespace/kubernetes-dashboard created
+serviceaccount/kubernetes-dashboard created
+service/kubernetes-dashboard created
+secret/kubernetes-dashboard-certs created
+secret/kubernetes-dashboard-csrf created
+secret/kubernetes-dashboard-key-holder created
+configmap/kubernetes-dashboard-settings created
+role.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard created
+rolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+deployment.apps/kubernetes-dashboard created
+service/dashboard-metrics-scraper created
+deployment.apps/dashboard-metrics-scraper created
+```
+
+### create secret for dashboard account 
+
+```
+[ashu@docker-host ~]$ cat secret.yaml 
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: k8s-token
+  namespace: kubernetes-dashboard
+  annotations:
+    kubernetes.io/service-account.name: "kubernetes-dashboard"
+```
+
+### giving access to dashboard 
+
+```
+kubectl create clusterrolebinding  perms --clusterrole cluster-admin  --serviceaccount=kubernetes-dashboard:kubernetes-dashboard
+clusterrolebinding.rbac.authorization.k8s.io/perms created
+```
+
 
 
 
