@@ -230,6 +230,77 @@ ashupod2      1/1     Running   0          7s
 [ashu@docker-host ashu-k8sapps]$ 
 ```
 
+### PRivate Docker image deploy in k8s 
+
+```
+kubectl run ashupod3 --image=phx.ocir.io/axmbtg8judkl/ashuwebapp:frontendv1   --port 80  --dry-run=client -o yaml >ocrpod.yaml 
+[ashu@docker-host ashu-k8sapps]$ kubectl apply -f ocrpod.yaml 
+pod/ashupod3 created
+[ashu@docker-host ashu-k8sapps]$ kubectl  get  po 
+NAME       READY   STATUS             RESTARTS   AGE
+ashupod3   0/1     ImagePullBackOff   0          5s
+[ashu@docker-host ashu-k8sapps]$ 
+
+```
+
+### understanding secret in k8s under apiVersion v1 
+
+<img src="secret.png">
+
+### creating secret to store ocr registry credential 
+
+```
+kubectl  create  secret  docker-registry  ashuimg-sec  --docker-server=phx.ocir.io   --docker-username=""  --docker-password=""  --dry-run=client  -o yaml >ocr_secret.yaml 
+
+===
+[ashu@docker-host ashu-k8sapps]$ kubectl  apply -f ocr_secret.yaml 
+secret/ashuimg-sec created
+[ashu@docker-host ashu-k8sapps]$ kubectl  get  secret  
+NAME          TYPE                             DATA   AGE
+ashuimg-sec   kubernetes.io/dockerconfigjson   1      10s
+[ashu@docker-host ashu-k8sapps]$ 
+
+```
+
+### let's use it inside pod yaml file 
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: ashupod3
+  name: ashupod3
+spec:
+  imagePullSecrets: # for calling secret 
+  - name: ashuimg-sec # name of secret 
+  containers:
+  - image: phx.ocir.io/axmbtg8judkl/ashuwebapp:frontendv1
+    name: ashupod3
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+```
+
+### replace after adding changes 
+
+```
+[ashu@docker-host ashu-k8sapps]$ kubectl replace  -f ocrpod.yaml --force 
+pod "ashupod3" deleted
+pod/ashupod3 replaced
+[ashu@docker-host ashu-k8sapps]$ kubectl  get  po 
+NAME       READY   STATUS    RESTARTS   AGE
+ashupod3   1/1     Running   0          6s
+[ashu@docker-host ashu-k8sapps]$ 
+```
+
+
+
 
 
 
