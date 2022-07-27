@@ -518,6 +518,71 @@ status:
 
 ```
 
+### task YAML 
+
+```
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: ashuk8s1
+spec: {}
+status: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: ashupodx
+  name: ashupodx
+  namespace: ashuk8s1
+spec:
+  containers:
+  - command:
+    - sleep
+    - "10000"
+    image: ubuntu
+    name: ashupodx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashusvc1
+  name: ashusvc1
+  namespace: ashuk8s1
+spec:
+  ports:
+  - name: 1234-80
+    port: 1234
+    protocol: TCP
+    targetPort: 80
+    nodePort: 31111
+  selector:
+    app: ashusvc1
+  type: NodePort
+status:
+  loadBalancer: {}
+
+
+```
+
+###
+
+```
+574  echo hii >a.txt 
+  575  ls
+  576  kubectl  get  po,svc -n ashuk8s1 
+  577  ls
+  578  kubectl  cp a.txt   ashupodx:/tmp/  -n ashuk8s1 
+```
+
 
 
 
