@@ -220,6 +220,22 @@ ashucustomerapp   Deployment/ashucustomerapp   1%/80%    3         10        3  
 [ashu@docker-host customer-app-deploy]$ 
 ```
 
+### CLoud controller in k8s 
+
+<img src="clc.png">
+
+### loadbalancer service 
+
+```
+ashu@docker-host customer-app-deploy]$ kubectl expose deployment ashucustomerapp --type LoadBalancer  --port 80 --name x1
+
+Error from server (AlreadyExists): services "x1" already exists
+[ashu@docker-host customer-app-deploy]$ kubectl get  svc 
+NAME      TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+ashulb1   NodePort       10.104.145.51   <none>        1234:30004/TCP   137m
+x1        LoadBalancer   10.99.7.7       <pending>     80:32586/TCP     14s
+[ashu@docker-host customer-app-deploy]$ 
+```
 
 
 
