@@ -136,6 +136,91 @@ ashucustomerapp-7fdbb87555-m2skf   1/1     Terminating   0          93s
 
 
 ```
+### HPA in k8s 
+
+<img src="hpa.png">
+
+### deployment with restricted vertical scaling 
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashucustomerapp
+  name: ashucustomerapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashucustomerapp
+  strategy: {}
+  template: # for creating pod 
+    metadata:
+      creationTimestamp: null
+      labels: # labels of pod 
+        app: ashucustomerapp
+    spec:
+      containers:
+      - image: dockerashu/oracleapp:v1
+        name: oracleapp
+        ports:
+        - containerPort: 80
+        envFrom: # taking env from somewhere 
+        - configMapRef: # from Configmap 
+            name: appenv # name of configmap 
+        resources: # dynamic resources 
+          requests:
+            memory: 200M 
+            cpu: 100m # 1vcpu === 1000 Milicore 
+          limits: 
+            memory: 400M 
+            cpu: 300m 
+status: {}
+
+```
+
+### lets redeploy deployment 
+
+```
+ashu@docker-host customer-app-deploy]$ kubectl apply -f deployment.yaml 
+deployment.apps/ashucustomerapp configured
+[ashu@docker-host customer-app-deploy]$ kubectl  get po 
+NAME                               READY   STATUS        RESTARTS   AGE
+ashucustomerapp-5c78756686-gbp4t   1/1     Running       0          3s
+ashucustomerapp-5d4f579f7b-b7p2n   1/1     Terminating   0          47m
+[ashu@docker-host customer-app-deploy]$ 
+
+```
+
+### implementing autoscaling 
+
+```
+[ashu@docker-host customer-app-deploy]$ kubectl get deploy 
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+ashucustomerapp   1/1     1            1           77m
+[ashu@docker-host customer-app-deploy]$ kubectl autoscale deployment ashucustomerapp --min=3  --max=10   --cpu-percent 80  --dry-run=client -o yaml  >hpa.yaml 
+[ashu@docker-host customer-app-deploy]$ kubectl apply -f hpa.yaml 
+horizontalpodautoscaler.autoscaling/ashucustomerapp created
+[ashu@docker-host customer-app-deploy]$ kubectl get  hpa
+NAME              REFERENCE                    TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+ashucustomerapp   Deployment/ashucustomerapp   <unknown>/80%   3         10        0          6s
+[ashu@docker-host customer-app-deploy]$ kubectl get deployments
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+ashucustomerapp   1/1     1            1           78m
+```
+
+### hpa 
+
+```
+[ashu@docker-host customer-app-deploy]$ kubectl get hpa
+NAME              REFERENCE                    TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+ashucustomerapp   Deployment/ashucustomerapp   1%/80%    3         10        3          2m9s
+[ashu@docker-host customer-app-deploy]$ 
+```
+
+
 
 
 
