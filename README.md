@@ -121,6 +121,22 @@ NAME      ENDPOINTS            AGE
 ashulb1   192.168.216.127:80   89s
 ```
 
+### if we change in configmap for ENV -- then to update deployment we can using rolling updates 
+
+```
+[ashu@docker-host customer-app-deploy]$ kubectl apply -f config.yaml 
+configmap/appenv configured
+[ashu@docker-host customer-app-deploy]$ kubectl rollout restart deployment ashucustomerapp 
+deployment.apps/ashucustomerapp restarted
+[ashu@docker-host customer-app-deploy]$ kubectl  get  po 
+NAME                               READY   STATUS        RESTARTS   AGE
+ashucustomerapp-7c7fc9f5d8-jlf7k   1/1     Running       0          6s
+ashucustomerapp-7fdbb87555-m2skf   1/1     Terminating   0          93s
+[ashu@docker-host customer-app-deploy]$ 
+
+
+```
+
 
 
 
