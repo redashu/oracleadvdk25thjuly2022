@@ -237,6 +237,10 @@ x1        LoadBalancer   10.99.7.7       <pending>     80:32586/TCP     14s
 [ashu@docker-host customer-app-deploy]$ 
 ```
 
+### Ingress in k8s 
+
+<img src="ingress.png">
+
 
 
 
