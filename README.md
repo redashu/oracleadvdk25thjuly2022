@@ -362,6 +362,66 @@ db-pass       Opaque                           1      8s
 [ashu@docker-host mysql-db]$ 
 ```
 
+### creating database deployment file
+
+```
+kubectl create deployment  ashudb --image=mysql --port 3306  --dry-run=client -o yaml  >deploy.yaml 
+====
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # template section 
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudb
+    spec:
+      containers:
+      - image: mysql
+        name: mysql
+        ports:
+        - containerPort: 3306
+        envFrom: # using configmap as env 
+        - configMapRef:
+            name: db-details
+        env: # calling env to set value in ENv variable 
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-pass
+              key: sqlpass
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-pass
+              key: sqlpass
+        resources: {}
+status: {}
+
+```
+
+### deploy it 
+
+```
+[ashu@docker-host mysql-db]$ kubectl apply -f deploy11.yaml 
+deployment.apps/ashudb configured
+[ashu@docker-host mysql-db]$ kubectl  get po
+NAME                      READY   STATUS    RESTARTS   AGE
+ashudb-64bcdb6c48-55xbv   1/1     Running   0          3s
+
+```
+
 
 
 
