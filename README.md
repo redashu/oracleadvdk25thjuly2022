@@ -241,6 +241,79 @@ x1        LoadBalancer   10.99.7.7       <pending>     80:32586/TCP     14s
 
 <img src="ingress.png">
 
+### nginx ingress controller 
+
+```
+[ashu@docker-host ~]$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.3.0/deploy/static/provider/baremetal/deploy.yaml
+namespace/ingress-nginx created
+serviceaccount/ingress-nginx created
+serviceaccount/ingress-nginx-admission created
+role.rbac.authorization.k8s.io/ingress-nginx created
+role.rbac.authorization.k8s.io/ingress-nginx-admission created
+clusterrole.rbac.authorization.k8s.io/ingress-nginx created
+clusterrole.rbac.authorization.k8s.io/ingress-nginx-admission created
+rolebinding.rbac.authorization.k8s.io/ingress-nginx created
+rolebinding.rbac.authorization.k8s.io/ingress-nginx-admission created
+clusterrolebinding.rbac.authorization.k8s.io/ingress-nginx created
+clusterrolebinding.rbac.authorization.k8s.io/ingress-nginx-admission created
+configmap/ingress-nginx-controller created
+service/ingress-nginx-controller created
+service/ingress-nginx-controller-admission created
+deployment.apps/ingress-nginx-controller created
+job.batch/ingress-nginx-admission-create created
+```
+
+### in current deployment lets delete all svc and create only one 
+
+```
+[ashu@docker-host customer-app-deploy]$ kubectl  get deploy 
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+ashucustomerapp   3/3     3            3           4h43m
+[ashu@docker-host customer-app-deploy]$ kubectl  expose  deployment ashucustomerapp  --type ClusterIP --port 80 --name ashulbx1 
+service/ashulbx1 exposed
+[ashu@docker-host customer-app-deploy]$ kubectl  get  svc
+NAME       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+ashulbx1   ClusterIP   10.109.102.239   <none>        80/TCP    5s
+[ashu@docker-host customer-app-deploy]$ 
+
+```
+
+### ingress rule 
+
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ashu-webapp-route-rule # changed here 
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx # changer 
+  rules:
+  - host: www.ashu.com  # add this line 
+    http:
+      paths:
+      - path: / # on home page 
+        pathType: Prefix
+        backend:
+          service:
+            name: ashulbx1 # name of service 
+            port:
+              number: 80
+```
+
+### lets deploy it 
+
+```
+ashu@docker-host customer-app-deploy]$ kubectl apply -f ingress-rule.yaml 
+ingress.networking.k8s.io/ashu-webapp-route-rule created
+[ashu@docker-host customer-app-deploy]$ 
+[ashu@docker-host customer-app-deploy]$ kubectl  get  ingress 
+NAME                     CLASS   HOSTS          ADDRESS   PORTS   AGE
+ashu-webapp-route-rule   nginx   www.ashu.com             80      9s
+[ashu@docker-host customer-app-deploy]$ 
+
+```
 
 
 
