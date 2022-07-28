@@ -315,6 +315,52 @@ ashu-webapp-route-rule   nginx   www.ashu.com             80      9s
 
 ```
 
+### storage in k8s 
+
+<img src="st.png">
+
+## MYSQL DB deploy as Deployment 
+
+```
+kubectl create configmap db-details --from-literal MYSQL_USER="admin" --dry-run=client -o yaml >cm.yaml
+===
+
+apiVersion: v1
+data:
+  MYSQL_USER: admin
+  MYSQL_DATABASE: oracleinfo
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: db-details
+
+```
+
+### creating secret 
+
+```
+kubectl  create secret generic db-pass --from-literal sqlpass="Docker@098@" --dry-run=client  -o yaml  >secret.yaml 
+```
+
+### deploy it 
+
+```
+[ashu@docker-host mysql-db]$ ls
+cm.yaml  secret.yaml
+[ashu@docker-host mysql-db]$ kubectl  apply -f .
+configmap/db-details created
+secret/db-pass created
+[ashu@docker-host mysql-db]$ kubectl  get  cm 
+NAME               DATA   AGE
+appenv             1      5h34m
+db-details         2      5s
+kube-root-ca.crt   1      29h
+[ashu@docker-host mysql-db]$ kubectl  get  secret
+NAME          TYPE                             DATA   AGE
+ashuimg-sec   kubernetes.io/dockerconfigjson   1      28h
+db-pass       Opaque                           1      8s
+[ashu@docker-host mysql-db]$ 
+```
 
 
 
