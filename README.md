@@ -56,7 +56,7 @@ spec:
         ports:
         - containerPort: 80
         envFrom: # taking env from somewhere 
-          configMapRef: # from Configmap 
+        - configMapRef: # from Configmap 
             name: appenv # name of configmap 
         resources: {}
 status: {}
@@ -91,6 +91,34 @@ spec:
 status:
   loadBalancer: {}
 
+```
+
+### lets deploy it 
+
+```
+[ashu@docker-host customer-app-deploy]$ kubectl  apply -f  . 
+configmap/appenv configured
+deployment.apps/ashucustomerapp created
+service/ashulb1 configured
+[ashu@docker-host customer-app-deploy]$ kubectl get deploy
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+ashucustomerapp   1/1     1            1           30s
+[ashu@docker-host customer-app-deploy]$ kubectl get rs
+NAME                         DESIRED   CURRENT   READY   AGE
+ashucustomerapp-7fdbb87555   1         1         1       36s
+[ashu@docker-host customer-app-deploy]$ kubectl get po
+NAME                               READY   STATUS    RESTARTS   AGE
+ashucustomerapp-7fdbb87555-jkr6q   1/1     Running   0          40s
+[ashu@docker-host customer-app-deploy]$ kubectl get cm
+NAME               DATA   AGE
+appenv             1      78s
+kube-root-ca.crt   1      24h
+[ashu@docker-host customer-app-deploy]$ kubectl get svc
+NAME      TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+ashulb1   NodePort   10.104.145.51   <none>        1234:30004/TCP   84s
+[ashu@docker-host customer-app-deploy]$ kubectl get ep
+NAME      ENDPOINTS            AGE
+ashulb1   192.168.216.127:80   89s
 ```
 
 
