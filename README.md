@@ -330,6 +330,29 @@ ashudb-7db755b7cd-x2899   1/1     Running   0          102s
 [ashu@docker-host k8s_final_demo]$ 
 
 ```
+### creating service for Database 
+
+```
+ashu@docker-host ~]$ kubectl get deploy 
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+ashudb   1/1     1            1           17m
+[ashu@docker-host ~]$ kubectl expose deployment ashudb --type ClusterIP  --port 3306  --name dbserver 
+service/dbserver exposed
+```
+
+### creating database client app to access 
+
+```
+ 978  kubectl  create  deployment  db-client-app  --image=adminer  --port 8080 
+  979  kubectl  get  deploy 
+  980  kubectl  expose deployment db-client-app --type NodePort --port 8080 --name app
+  981  kubectl  get  svc 
+  982  history 
+[ashu@docker-host ~]$ kubectl  get  svc
+NAME       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+app        NodePort    10.110.123.92   <none>        8080:30284/TCP   81s
+dbserver   ClusterIP   10.99.225.9     <none>        3306/TCP         4m25s
+```
 
 
 
