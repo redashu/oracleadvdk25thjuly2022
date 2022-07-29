@@ -250,7 +250,16 @@ metadata:
 ### creating secret for password purpose 
 
 ```
-kubectl create secret generic db-cred --from-literal dbpass="Docker@123" --dry-run=client -o yaml  >dbcred.yaml
+apiVersion: v1
+data:
+  MYSQL_PASSWORD: RG9ja2VyQDEyMw==
+  MYSQL_ROOT_PASSWORD: RG9ja2VyQDEyMw==
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: db-cred
+
+
 ```
 
 ### creating deployment 
