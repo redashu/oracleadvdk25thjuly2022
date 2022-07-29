@@ -171,7 +171,53 @@ dev-pod-role1   2022-07-29T06:15:39Z
 
 ```
 
+### importance of Rolebindings 
 
+<img src="bind.png">
+
+### creating rolebinding 
+
+```
+kubectl create rolebinding  dev-bind1 --role=dev-pod-role1  --serviceaccount=ashu-dev:dev  --dry-run=client -o yaml  >devsarolebind1.yaml 
+```
+
+### YAML 
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: null
+  name: dev-bind1
+  namespace: ashu-dev # namespace info 
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: dev-pod-role1
+subjects:
+- kind: ServiceAccount
+  name: dev
+  namespace: ashu-dev
+
+```
+
+### 
+
+```
+[ashu@docker-host iam-k8s]$ kubectl  apply  -f  devsarolebind1.yaml 
+rolebinding.rbac.authorization.k8s.io/dev-bind1 created
+[ashu@docker-host iam-k8s]$ 
+[ashu@docker-host iam-k8s]$ kubectl  get roles -n ashu-dev 
+NAME            CREATED AT
+dev-pod-role1   2022-07-29T06:15:39Z
+[ashu@docker-host iam-k8s]$ kubectl  get sa -n ashu-dev 
+NAME      SECRETS   AGE
+default   0         99m
+dev       0         76m
+[ashu@docker-host iam-k8s]$ kubectl  get rolebindings  -n ashu-dev 
+NAME        ROLE                 AGE
+dev-bind1   Role/dev-pod-role1   32s
+```
 
 
 
