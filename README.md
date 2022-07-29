@@ -99,5 +99,79 @@ namespace:  8 bytes
 token:      eyJhbGciOiJSUzI1NiIsImtpZCI6ImczdVNGUW1PTEJwREFxQXFHNHhPbVZ5cXczQ21mNTFQa25OZ2JXNjVvdmsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJhc2h1LWRldiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkZXYtc2VjcmV0Iiwia3ViZXJuZXRlcy5pby9z
 ```
 
+### lets test new token config file with new user 
+
+```
+fire@ashutoshhs-MacBook-Air ~ % ssh common-dev@129.146.109.58                   
+common-dev@129.146.109.58's password: 
+-bash: warning: setlocale: LC_CTYPE: cannot change locale (UTF-8): No such file or directory
+[common-dev@docker-host ~]$ 
+[common-dev@docker-host ~]$ 
+[common-dev@docker-host ~]$ 
+[common-dev@docker-host ~]$ 
+[common-dev@docker-host ~]$ cp -v  /tmp/ashu-dev.conf  . 
+'/tmp/ashu-dev.conf' -> './ashu-dev.conf'
+[common-dev@docker-host ~]$ ls
+ashu-dev.conf
+[common-dev@docker-host ~]$ kubectl  get nodes  --kubeconfig  ashu-dev.conf 
+Error from server (Forbidden): nodes is forbidden: User "system:serviceaccount:ashu-dev:dev" cannot list resource "nodes" in API group "" at the cluster scope
+[common-dev@docker-host ~]$ ls
+ashu-dev.conf  chan-dev.conf
+[common-dev@docker-host ~]$ 
+[common-dev@docker-host ~]$ kubectl  get pods   --kubeconfig  ashu-dev.conf 
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:ashu-dev:dev" cannot list resource "pods" in API group "" in the namespace "ashu-dev"
+[common-dev@docker-host ~]$ kubectl  cluster-info    --kubeconfig  ashu-dev.conf 
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+Error from server (Forbidden): services is forbidden: User "system:serviceaccount:ashu-dev:dev" cannot list resource "services" in API group "" in the namespace "kube-system"
+[common-dev@docker-host ~]$ ls
+ashu-dev.conf  chan-dev.conf  pal-dev.conf
+[common-dev@docker-host ~]$ 
+
+```
+
+### as we have seen we don't have any permission with this service account --
+
+### role creation 
+
+```
+kubectl create role  dev-pod-role1 --resource=pods --verb=create --verb=get  --dry-run=client -o yaml >devsa-podrole1.yaml
+```
+
+## YAML file of role 
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: null
+  name: dev-pod-role1
+  namespace: ashu-dev # roles are namespace dependent 
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - create
+  - get
+  - list 
+
+```
+
+### 
+
+```
+[ashu@docker-host iam-k8s]$ kubectl apply -f  devsa-podrole1.yaml 
+role.rbac.authorization.k8s.io/dev-pod-role1 created
+[ashu@docker-host iam-k8s]$ kubectl get  roles -n ashu-dev 
+NAME            CREATED AT
+dev-pod-role1   2022-07-29T06:15:39Z
+[ashu@docker-host iam-k8s]$ 
+
+```
+
+
+
 
 
