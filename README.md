@@ -6,5 +6,98 @@
 
 <img src="iam.png">
 
+### few commands for super admin to see config admin.conf file 
+
+```
+kubectl config view 
+kubectl  config  view --raw 
+```
+
+### create Namespace for Developer 
+
+```
+[ashu@docker-host ~]$ kubectl create  ns   ashu-dev 
+namespace/ashu-dev created
+[ashu@docker-host ~]$ kubectl  get  ns  --sort-by=.metadata.name 
+NAME                   STATUS   AGE
+abhi-apps              Active   47h
+ashu-apps              Active   47h
+ashu-dev               Active   18s
+
+```
+
+### understanding serviceaccoutns inside Namespace 
+
+<img src="sa.png">
+
+### by default everynamespace is having default service account 
+
+```
+[ashu@docker-host ~]$ kubectl  get  serviceaccounts -n ashu-dev 
+NAME      SECRETS   AGE
+default   0         21m
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  sa -n ashu-dev 
+NAME      SECRETS   AGE
+default   0         21m
+
+```
+
+### we can also create your own service accounts 
+
+```
+[ashu@docker-host ~]$ kubectl  create   sa  dev   -n ashu-dev 
+serviceaccount/dev created
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ kubectl  get  sa -n ashu-dev 
+NAME      SECRETS   AGE
+default   0         23m
+dev       0         3s
+```
+
+### for token fo service account we need to create secret 
+
+```
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: dev-secret # name of secret 
+  namespace: ashu-dev 
+  annotations:
+    kubernetes.io/service-account.name: "dev" # name of serviceaccount 
+```
+
+====
+
+```
+[ashu@docker-host myimages]$ kubectl apply -f iam-k8s/sasecret.yaml 
+secret/dev-secret created
+
+[ashu@docker-host ~]$ kubectl  get  secrets -n ashu-dev 
+NAME         TYPE                                  DATA   AGE
+dev-secret   kubernetes.io/service-account-token   3      56s
+```
+
+### fetching token from secret 
+
+```
+kubectl -n ashu-dev describe secrets dev-secret 
+Name:         dev-secret
+Namespace:    ashu-dev
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: dev
+              kubernetes.io/service-account.uid: 7d403358-75f0-4251-84cf-6292e3b12978
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+ca.crt:     1099 bytes
+namespace:  8 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6ImczdVNGUW1PTEJwREFxQXFHNHhPbVZ5cXczQ21mNTFQa25OZ2JXNjVvdmsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJhc2h1LWRldiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkZXYtc2VjcmV0Iiwia3ViZXJuZXRlcy5pby9z
+```
+
 
 
