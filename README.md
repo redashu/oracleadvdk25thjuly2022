@@ -354,6 +354,10 @@ app        NodePort    10.110.123.92   <none>        8080:30284/TCP   81s
 dbserver   ClusterIP   10.99.225.9     <none>        3306/TCP         4m25s
 ```
 
+### k8s INfra components 
+
+<img src="infra.png">
+
 
 
 
