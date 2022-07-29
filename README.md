@@ -219,5 +219,111 @@ NAME        ROLE                 AGE
 dev-bind1   Role/dev-pod-role1   32s
 ```
 
+### storage and app deployment in k8s 
+
+<img src="apps.png">
+
+### understanding Dns in k8s 
+
+<img src="dns.png">
+
+### DNS testing with DB and DB client 
+
+### Deployment of Databases 
+
+#### Creating CM 
+
+```
+kubectl create configmap  db-env --from-literal  MYSQL_USER="admin"    --dry-run=client -o yaml  >dbcm.yaml
+====
+apiVersion: v1
+data:
+  MYSQL_USER: admin
+  MYSQL_DATABASE: oracle-info 
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: db-env
+
+```
+
+### creating secret for password purpose 
+
+```
+kubectl create secret generic db-cred --from-literal dbpass="Docker@123" --dry-run=client -o yaml  >dbcred.yaml
+```
+
+### creating deployment 
+
+```
+ kubectl create deployment ashudb --image=mysql --port 3306 --dry-run=client -o yaml >dbdeploy.yaml 
+ ====
+ ==
+ 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # template for creating pods 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods 
+        app: ashudb
+    spec:
+      volumes: # creating volume dynamically 
+      - name: ashudb-vol  
+        hostPath: 
+          path: /common/ashudb 
+          type: DirectoryOrCreate # if above path is not available then create it
+      containers:
+      - image: mysql
+        name: mysql
+        ports:
+        - containerPort: 3306
+        envFrom: # reading env var directly 
+        - secretRef: # using secret 
+            name: db-cred
+        - configMapRef: # using configMap 
+            name: db-env
+        volumeMounts: # adding above created volume to container 
+        - name: ashudb-vol
+          mountPath: /var/lib/mysql/ # default location for db store in MYSQL 
+        resources: {}
+      
+status: {}
+
+```
+====
+
+```
+[ashu@docker-host k8s_final_demo]$ kubectl  get  cm 
+NAME               DATA   AGE
+db-env             2      32m
+kube-root-ca.crt   1      41m
+[ashu@docker-host k8s_final_demo]$ kubectl  get  secret
+NAME      TYPE     DATA   AGE
+db-cred   Opaque   2      32m
+[ashu@docker-host k8s_final_demo]$ kubectl  get  deploy
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+ashudb   1/1     1            1           95s
+[ashu@docker-host k8s_final_demo]$ kubectl  get  po
+NAME                      READY   STATUS    RESTARTS   AGE
+ashudb-7db755b7cd-x2899   1/1     Running   0          102s
+[ashu@docker-host k8s_final_demo]$ 
+
+```
+
+
+
+
 
 
